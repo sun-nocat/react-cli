@@ -1,5 +1,5 @@
 {
-  "name": "React-Webpack4.x",
+  "name": "react-cli",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "dev": "webpack-dev-server --open --port 3000 --hot --progress --host 127.0.0.1"
   },
   "keywords": [],
-  "author": "",
+  "author": "sunmingming",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.26.3",
