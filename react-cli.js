@@ -8,19 +8,22 @@ const project_name = process.argv[2] || "project";
 const dev_path = process.cwd() + '/' + project_name;
 
 const dir_arr = [
-    'dist/',
+    'config/',
     'src/',
 ]
 //文件配置
 const file_arr = [
     '.babelrc',
     '.gitignre',
+    'index.html',
     'package.json',
     'README.md',
-    'webpack.config.js',
-    'dist/index.html',
-    'src/index.js',
-    'src/index.html'
+    'config/webpack.base.conf.js',
+    'config/webpack.dev.conf.js',
+    'config/webpack.prod.conf.js',
+    'src/App.js',
+    'src/main.js',
+
 ];
 
 //递归清空目录
@@ -68,7 +71,237 @@ function createFile() {
 
 function fillText(filled){
     switch(filled){
-        case 'dist/index.html':
+        case 'config/webpack.base.conf.js':
+            var write_text = `
+/*
+* @Description: 公用的配置
+* @Author: sunmingming
+* @Email: sun_mingming@foxmail.com
+* @Date: 2019-03-18 16:03:01
+*/
+
+'use strict'
+
+const path  = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+
+    entry:{
+        app:'./src/main.js'
+    },
+    output:{
+        path:path.resolve(__dirname, '../dist'),
+        filename:"[name].js"
+    },
+
+    resolve:{
+        extensions:['.ts','.tsx','.js','.json']
+    },
+
+    //loader
+    module:{
+        rules:[
+            {
+                test:/\.js|jsx$/,
+                exclude:/(node_modules|bower_components)/,//屏蔽不需要处理的文件
+                loader: 'babel-loader'
+            }
+        ]
+    },
+
+    //插件
+    plugins:[
+        new HtmlWebpackPlugin({
+            filename:'index.html',
+            template:'index.html',
+            inject:'body'
+        })
+    ]
+}  
+            `;
+
+            return write_text;
+            break;
+
+        case 'config/webpack.dev.conf.js':
+            var write_text = `
+/*
+* @Description: 开发环境配置
+* @Author: sunmingming
+* @Email: sun_mingming@foxmail.com
+* @Date: 2019-03-18 16:04:00
+*/
+
+
+'use strict'
+
+const merge = require('webpack-merge');
+const baseWebpackConfig = require('./webpack.base.conf');
+const OpenBrewserPlugin = require('open-browser-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+
+module.exports = merge(baseWebpackConfig, {
+    // 模式
+    mode: "development",
+    // 调试工具
+    devtool: 'inline-source-map',
+    // 开发服务器
+    devServer: {
+        contentBase: false, // 默认webpack-dev-server会为根文件夹提供本地服务器，如果想为另外一个目录下的文件提供本地服务器，应该在这里设置其所在目录
+        historyApiFallback: true, // 在开发单页应用时非常有用，它依赖于HTML5 history API，如果设置为true，所有的跳转将指向index.html
+        compress: true, // 启用gzip压缩
+        inline: true, // 设置为true，当源文件改变时会自动刷新页面
+        hot: true, // 模块热更新，取决于HotModuleReplacementPlugin
+        host: '127.0.0.1', // 设置默认监听域名，如果省略，默认为“localhost”
+        port: 8080 // 设置默认监听端口，如果省略，默认为“8080”
+    },
+    // 插件
+    plugins: [
+        // 热更新相关
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new OpenBrewserPlugin({
+            url:'http://localhost:8080'
+        })
+
+    ],
+    optimization: {
+        nodeEnv: 'development',
+    }
+});
+            `;
+            
+            return write_text;
+            break;
+
+
+            case 'config/webpack.prod.conf.js':
+            var write_text = `
+/*
+* @Description: 生产环境配置
+* @Author: sunmingming
+* @Email: sun_mingming@foxmail.com
+* @Date: 2019-03-18 16:04:14
+*/
+'use strict'
+const merge = require('webpack-merge');
+const baseWebpackConfig = require('./webpack.base.conf');
+
+const path = require('path');
+const webpack = require('webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
+module.exports = merge(baseWebpackConfig, {
+    // 模式
+    mode: "production",
+    // 调试工具
+    devtool: '#source-map',
+    // 输出
+    output: {
+    path: path.resolve(__dirname, '../dist'),
+    filename: "js/[name].[chunkhash].js",
+    },
+    // 插件
+    plugins: [
+    new CleanWebpackPlugin(['dist', 'build'], {
+        root: path.resolve(__dirname, '../'),
+    }),
+    new webpack.HashedModuleIdsPlugin(),
+    ],
+    // 代码分离相关
+    optimization: {
+    nodeEnv: 'production',
+    minimizer: [new UglifyJSPlugin()],
+    runtimeChunk: {
+        name: 'manifest'
+    },
+    splitChunks: {
+        minSize: 30000,
+        minChunks: 1,
+        maxAsyncRequests: 5,
+        maxInitialRequests: 3,
+        name: false,
+        cacheGroups: {
+        vendor: {
+            test: /[\\\\/]node_modules[\\\\/]/,
+            name: 'vendor',
+            chunks: 'initial',
+        }
+        }
+    }
+    }
+});
+            `;
+            return write_text;
+            break;
+
+            case 'src/App.js':
+            var write_text = `
+/*
+* @Description: React根组件
+* @Author: sunmingming
+* @Email: sun_mingming@foxmail.com
+* @Date: 2019-03-18 17:46:14
+*/
+            `
+            return write_text;
+            break;
+
+            case 'src/main.js':
+            var write_text = `
+/*
+* @Description: 项目入口文件
+* @Author: sunmingming
+* @Email: sun_mingming@foxmail.com
+* @Date: 2019-03-18 16:05:42
+*/
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+class App extends React.Component{
+
+    render() {
+        return(
+            <div>ssss!</div>
+        )
+    }
+}
+
+
+
+ReactDOM.render(<App/>,document.getElementById('app'))
+            `;
+            return write_text;
+            break;
+
+            case '.babelrc':
+
+            var write_text = `
+{
+    "presets": ["latest","react","stage-2"],
+    "plugins": []
+}     
+            `;
+
+            return write_text;
+            break;
+
+            case '.gitignre':
+
+            var write_text = `
+
+/node_modules
+/dist          
+            `;
+            return write_text;
+            break;
+
+            case 'index.html':
+
             var write_text = `
 <!DOCTYPE html>
 <html lang="en">
@@ -76,169 +309,73 @@ function fillText(filled){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>index首页</title>
-    <!-- <script src="../dist/main.js"></script> -->
-
+    <title>Document</title>
 </head>
 <body>
-
     <div id="app"></div>
-
-    
-<script type="text/javascript" src="main.js"></script></body>
+</body>
 </html>
-            
-            `;
-
-            return write_text;
-            break;
-
-        case 'src/index.js':
-            var write_text = `
-            //1/导入包名时。接受的成员名称必须这么写
- 
-import React from 'react' //创建组件，虚拟dom.生命周期
-import ReactDom from 'react-dom' //把创建好的组件 和 虚拟dom 放到页面上
-
-
-var mydiv = <div id="mydiv" title="divTitle">这是一个div</div>
-
-ReactDom.render(mydiv,document.getElementById("app"));
-
-
-
-            `;
-            
-            return write_text;
-            break;
-
-
-            case '.babelrc':
-            var write_text = `
-{
-    "presets": [
-        "env",
-        "stage-0",
-        "react"
-    ],
-    "plugins": [
-        "transform-runtime"
-    ]
-}
-            `;
-            return write_text;
-            break;
-
-            case '.gitignre':
-            var write_text = `
-            /node_modules
-            /dist/main.js
             `;
             return write_text;
             break;
 
             case 'package.json':
-
             var write_text = `
 {
-"name": "react-cli",
-"version": "1.0.0",
-"description": "",
-"main": "index.js",
-"scripts": {
-    "test": "echo \\"Error: no test specified\\" && exit 1",
-    "dev": "webpack-dev-server --open --port 3000 --hot --progress --host 127.0.0.1"
-},
-"keywords": [],
-"author": "sunmingming",
-"license": "ISC",
-"devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "html-webpack-plugin": "^3.2.0",
-    "webpack": "^4.16.5",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
-},
-"dependencies": {
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2"
-}
-}
-
-            
+    "name": "project",
+    "version": "1.0.0",
+    "description": "",
+    "main": "webpack.config.js",
+    "dependencies": {
+        "@babel/core": "^7.3.4",
+        "babel-core": "^6.26.3",
+        "babel-loader": "^7.1.5",
+        "babel-plugin-import": "^1.11.0",
+        "babel-preset-latest": "^6.24.1",
+        "babel-preset-react": "^6.24.1",
+        "babel-preset-stage-0": "^6.24.1",
+        "clean-webpack-plugin": "^1.0.0",
+        "css-loader": "^2.1.1",
+        "file-loader": "^3.0.1",
+        "html-webpack-plugin": "^3.2.0",
+        "node-sass": "^4.11.0",
+        "open-browser-webpack-plugin": "0.0.5",
+        "react": "^16.8.4",
+        "react-dom": "^16.8.4",
+        "react-router-dom": "^4.4.0",
+        "sass-loader": "^7.1.0",
+        "style-loader": "^0.23.1",
+        "uglifyjs-webpack-plugin": "^2.1.2",
+        "url-loader": "^1.1.2",
+        "webpack": "^4.29.6",
+        "webpack-cli": "^3.3.0",
+        "webpack-dev-server": "^3.2.1",
+        "webpack-merge": "^4.2.1"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \\"Error: no test specified\\" && exit 1",
+        "dev": "webpack-dev-server --hot --inline --grogress --colors --config config/webpack.dev.conf.js",
+        "start": "npm run dev",
+        "build": "webpack --progress --colors --config config/webpack.prod.conf.js"
+    },
+    "author": "sunmingming",
+    "license": "ISC"
+    }
+    
             `;
 
             return write_text;
             break;
 
             case 'README.md':
-
             var write_text = `
-            # 我是注释
-            `;
-            return write_text;
-            break;
-
-            case 'webpack.config.js':
-
-            var write_text = `
-            const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-
-const htmlPlugin = new HtmlWebpackPlugin({
-    template: path.join(__dirname, './src/index.html'), //源文件
-    filename: 'index.html' //生成内存中首页的名称
-})
-
-
-
-module.exports = {
-
-    mode: 'development', //development   production  开发环境和生产环境的选项 不同与是否打包
-    //在webpack4.x中 有一个很大的特性，就是  约定大于配置，约定的打包入口文件是src下的index.js
-    plugins: [
-        htmlPlugin
-    ],
-
-    module: { //所有第三方  模块的配置规则
-        rules: [{ //第三方匹配规则
-            test: /\.js|jsx$/,
-            use: 'babel-loader',
-            exclude: /node_modules/ //千万不要忘记加
-        }]
-    }
-
-
-}
-            `;
-            return write_text;
-            break;
-
-            case 'src/index.html':
-            var write_text = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>index首页</title>
-
-</head>
-<body>
-
-    <div id="app"></div>
-
-    
-</body>
-</html>
-            `;
-
+## 使用方法 
+node react-cli.js my
+cd my
+npm install
+npm run dev
+            `
             return write_text;
             break;
 
