@@ -266,7 +266,8 @@ class App extends React.Component{
 
     render() {
         return(
-            <div>ssss!</div>
+            <div style={{textAlign:'center',fontSize:'24px'}}><a href="https://github.com/sun-nocat/react-cli">如果觉得这个脚手还不错，感谢给我一个star</a></div>
+        
         )
     }
 }
@@ -371,10 +372,9 @@ ReactDOM.render(<App/>,document.getElementById('app'))
             case 'README.md':
             var write_text = `
 ## 使用方法 
-node react-cli.js my
-cd my
-npm install
-npm run dev
+安装依赖 npm install
+启动开发环境 npm start
+线上打包 npm run build
             `
             return write_text;
             break;
