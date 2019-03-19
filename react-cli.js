@@ -107,6 +107,9 @@ module.exports = {
                 test:/\.js|jsx$/,
                 exclude:/(node_modules|bower_components)/,//屏蔽不需要处理的文件
                 loader: 'babel-loader'
+            },{
+                test:/\.css$/,
+                use:['style-loader', 'css-loader']
             }
         ]
     },
@@ -353,7 +356,10 @@ ReactDOM.render(<App/>,document.getElementById('app'))
         "webpack-dev-server": "^3.2.1",
         "webpack-merge": "^4.2.1"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "css-loader": "^2.1.1",
+        "style-loader": "^0.23.1",
+    },
     "scripts": {
         "test": "echo \\"Error: no test specified\\" && exit 1",
         "dev": "webpack-dev-server --hot --inline --grogress --colors --config config/webpack.dev.conf.js",
