@@ -1,4 +1,4 @@
-
+﻿
 
 // 引入node自带的相关模块
 const fs = require('fs')
@@ -370,7 +370,7 @@ ReactDOM.render(<Main />, document.getElementById('app'));
     },
     "devDependencies": {
         "css-loader": "^2.1.1",
-        "style-loader": "^0.23.1",
+        "style-loader": "^0.23.1"
     },
     "scripts": {
         "test": "echo \\"Error: no test specified\\" && exit 1",
