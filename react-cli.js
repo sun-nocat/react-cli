@@ -23,6 +23,7 @@ const file_arr = [
     'config/webpack.prod.conf.js',
     'src/App.js',
     'src/main.js',
+    'src/main.css'
 
 ];
 
@@ -250,6 +251,18 @@ module.exports = merge(baseWebpackConfig, {
 * @Email: sun_mingming@foxmail.com
 * @Date: 2019-03-18 17:46:14
 */
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+function App() {
+    return (
+        <div style={{ textAlign: 'center', fontSize: '24px' }}>
+            <a href="https://github.com/sun-nocat/react-cli">如果觉得这个脚手还不错，感谢给我一个star</a>
+        </div>
+    );
+}
+
+export default App;
             `
             return write_text;
             break;
@@ -262,22 +275,21 @@ module.exports = merge(baseWebpackConfig, {
 * @Email: sun_mingming@foxmail.com
 * @Date: 2019-03-18 16:05:42
 */
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { HashRouter, Route } from 'react-router-dom';
 
-class App extends React.Component{
-
-    render() {
-        return(
-            <div style={{textAlign:'center',fontSize:'24px'}}><a href="https://github.com/sun-nocat/react-cli">如果觉得这个脚手还不错，感谢给我一个star</a></div>
-        
-        )
-    }
+import App from './App';
+import './main.css';
+function Main() {
+    return (
+        <HashRouter>
+            <Route path="/" component={App} />
+        </HashRouter>
+    );
 }
 
-
-
-ReactDOM.render(<App/>,document.getElementById('app'))
+ReactDOM.render(<Main />, document.getElementById('app'));
             `;
             return write_text;
             break;
@@ -372,6 +384,22 @@ ReactDOM.render(<App/>,document.getElementById('app'))
     
             `;
 
+            return write_text;
+            break;
+
+            case 'src/main.css':
+            var write_text = `
+/*
+* @Description: 全局的样式
+* @Author: sunmingming
+* @Email: sun_mingming@foxmail.com
+* @Date: 2019-03-19 18:04:34
+*/
+html body{
+    margin: 0;
+    padding: 0;
+}
+            `
             return write_text;
             break;
 
