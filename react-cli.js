@@ -358,7 +358,7 @@ ReactDOM.render(<Main />, document.getElementById('app'));
         "open-browser-webpack-plugin": "0.0.5",
         "react": "^16.8.4",
         "react-dom": "^16.8.4",
-        "react-router-dom": "^4.4.0",
+        "react-router-dom": "^4.0.0",
         "sass-loader": "^7.1.0",
         "style-loader": "^0.23.1",
         "uglifyjs-webpack-plugin": "^2.1.2",
