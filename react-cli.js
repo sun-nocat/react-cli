@@ -14,7 +14,7 @@ const dir_arr = [
 //文件配置
 const file_arr = [
     '.babelrc',
-    '.gitignre',
+    '.gitignore',
     'index.html',
     'package.json',
     'README.md',
@@ -306,7 +306,7 @@ ReactDOM.render(<Main />, document.getElementById('app'));
             return write_text;
             break;
 
-            case '.gitignre':
+            case '.gitignore':
 
             var write_text = `
 
