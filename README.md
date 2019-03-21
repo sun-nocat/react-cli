@@ -17,3 +17,4 @@ npm run build
 
 ## 
 - 3.20日更新：添加对全局css的支持和react-router-dom。
+- 3.21日更新：修改生成的.gitinore文件
